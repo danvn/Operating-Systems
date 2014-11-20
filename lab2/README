@@ -1,0 +1,30 @@
+CS3753 (Operating Systems)
+Fall 2014
+University of Colorado Boulder
+Programming Assignment 2
+
+---Folders---
+input - names*.txt input files
+handout - Assignment description and documentation
+
+---Executables---
+lookup - A basic non-threaded DNS query-er
+queueTest - Unit test program for queue
+pthread-hello - A simple threaded "Hello World" program
+multi-lookup - multi-threaded version of lookup
+
+---Examples---
+Build:
+ make
+
+Clean:
+ make clean
+
+Lookup DNS info for all names files in input folder:
+ ./multi-lookup input/names*.txt results.txt
+
+Check queue for memory leaks:
+ valgrind ./queueTest
+
+Run pthread-hello
+ ./pthread-hello

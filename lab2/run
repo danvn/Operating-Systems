@@ -1,0 +1,1 @@
+./multi-lookup input/names* results.txt
