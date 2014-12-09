@@ -21,30 +21,47 @@
         open() and close() calls and support fh dependent functions.
 
 */
-
 #define FUSE_USE_VERSION 28
 #define HAVE_SETXATTR
+#define ENC_DATA ((struct bb_state *) fuse_get_context()->private_data)
+#define ENCRYPT 1
+#define DECRYPT 0
+#define PASS -1
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+// user.pa4-encfs.encrypted = "true" or "false"
+#define XATTR_FLAG "user.pa4-encfs.encrypted"
+#define XATTR_ENCRYPTED "true"
+#define XATTR_UNENCRYPTED "false"
+
 #ifdef linux
 /* For pread()/pwrite() */
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 700
 #endif
 
 #include <fuse.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <errno.h>
 #include <sys/time.h>
+#include <linux/limits.h>
 #ifdef HAVE_SETXATTR
 #include <sys/xattr.h>
 #endif
+
+#include "aes-crypt.h"
+
+struct enc_state {
+  char *rootdir;
+  char *passphrase;
+};
 
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {

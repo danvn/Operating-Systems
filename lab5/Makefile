@@ -23,7 +23,7 @@ OPENSSL_EXAMPLES = aes-crypt-util
 
 .PHONY: all fuse-examples xattr-examples openssl-examples clean
 
-all: fuse-examples xattr-examples openssl-examples
+all: fuse-examples xattr-examples openssl-examples pa5-encfs
 
 fuse-examples: $(FUSE_EXAMPLES)
 xattr-examples: $(XATTR_EXAMPLES)
@@ -35,6 +35,9 @@ fusehello: fusehello.o
 fusexmp: fusexmp.o
 	$(CC) $(LFLAGS) $^ -o $@ $(LLIBSFUSE)
 
+pa5-encfs: pa5-encfs.o aes-crypt.o
+	$(CC) $(LFLAGS) $^ -o $@ $(LLIBSFUSE) $(LLIBSOPENSSL)
+
 xattr-util: xattr-util.o
 	$(CC) $(LFLAGS) $^ -o $@
 
@@ -45,6 +48,9 @@ fusehello.o: fusehello.c
 	$(CC) $(CFLAGS) $(CFLAGSFUSE) $<
 
 fusexmp.o: fusexmp.c
+	$(CC) $(CFLAGS) $(CFLAGSFUSE) $<
+
+pa5-encfs.o: pa5-encfs.c
 	$(CC) $(CFLAGS) $(CFLAGSFUSE) $<
 
 xattr-util.o: xattr-util.c
@@ -61,6 +67,7 @@ clean:
 	rm -f $(XATTR_EXAMPLES)
 	rm -f $(OPENSSL_EXAMPLES)
 	rm -f *.o
+	rm -f pa5-encfs
 	rm -f *~
 	rm -f handout/*~
 	rm -f handout/*.log
